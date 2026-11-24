@@ -1039,3 +1039,150 @@ pollution =
         "The final value is kept between 0 and 100."
     )
     
+# ---------------------------------------------------------
+# ECOPULSE - DATAFRAME AND DATA VISUALISATION
+# ---------------------------------------------------------
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+st.divider()
+
+st.header("🌿 EcoPulse")
+st.subheader("Every choice leaves a footprint.")
+
+st.write(
+    "Discover the story behind your city's environmental health."
+)
+
+# Creating a DataFrame
+
+data = {
+    "Environmental Factor": [
+        "Cars",
+        "Factories",
+        "Recycling",
+        "Public Transport",
+        "Trees",
+        "Solar Energy"
+    ],
+    "Current Value": [
+        cars, factories, recycling,
+        transport, trees, solar
+    ],
+    "Pollution Impact": [
+        cars * 0.30,
+        factories * 0.25,
+        (100 - recycling) * 0.15,
+        (100 - transport) * 0.10,
+        -trees * 0.12,
+        -solar * 0.08
+    ]
+}
+
+df = pd.DataFrame(data)
+df["Pollution Impact"] = df["Pollution Impact"].round(2)
+
+st.subheader("📋 Environmental Report")
+st.dataframe(df, hide_index=True)
+
+st.caption(
+    "Positive values increase pollution. "
+    "Negative values reduce pollution. "
+    "Recycling and transport impacts represent their shortfalls."
+)
+
+# Data Visualisation
+
+st.subheader("📊 Nature in Numbers")
+
+graph1, graph2 = st.columns(2)
+
+# Horizontal Bar Graph
+
+with graph1:
+
+    st.markdown("#### What Shapes Your City?")
+
+    colors = [
+        "#E07A5F" if x > 0 else "#40916C"
+        for x in df["Pollution Impact"]
+    ]
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+
+    ax.barh(
+        df["Environmental Factor"],
+        df["Pollution Impact"],
+        color=colors
+    )
+
+    ax.axvline(0, color="gray")
+    ax.set_xlabel("Pollution Impact")
+    ax.invert_yaxis()
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+    st.pyplot(fig)
+    plt.close(fig)
+
+# Doughnut Chart
+
+with graph2:
+
+    st.markdown("#### The City's Green Balance")
+
+    fig2, ax2 = plt.subplots(figsize=(6, 5))
+
+    ax2.pie(
+        [eco_score, pollution],
+        labels=["Eco Score", "Pollution"],
+        colors=["#40916C", "#E07A5F"],
+        autopct="%1.0f%%",
+        startangle=90,
+        wedgeprops={
+            "width": 0.35,
+            "edgecolor": "white"
+        }
+    )
+
+    ax2.text(
+        0, 0,
+        str(eco_score) + "%",
+        ha="center",
+        va="center",
+        fontsize=25,
+        fontweight="bold",
+        color="#40916C"
+    )
+
+    st.pyplot(fig2)
+    plt.close(fig2)
+
+# Environmental Analysis
+
+st.subheader("🔍 What Is Your City Telling You?")
+
+if pollution < 30:
+    st.success("Your choices are helping nature thrive!")
+
+elif pollution < 60:
+    st.warning("Small changes can make a big difference.")
+
+else:
+    st.error("Your city needs greener choices!")
+
+st.caption("Values are based on the EcoMorph simulation.")
+
+st.divider()
+
+st.markdown("## 🌍 The Future Is in Your Hands.")
+
+st.write(
+    "Every number tells a story. "
+    "Every choice changes its ending."
+)
+
+st.markdown("**What kind of world will you create?**")
